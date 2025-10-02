@@ -41,7 +41,7 @@ const data = [
         description:'Göreme Valley in Cappadocia is a historical marvel set against a unique geological backdrop, where centuries of wind and water have sculpted the landscape into whimsical formations. The valley is also famous for its open-air museums, underground cities, and the enchanting experience of hot air ballooning.',
         image:'https://assets.codepen.io/3685267/timed-cards-6.jpg'
     },
-]
+];
 
 const _ = (id)=>document.getElementById(id)
 const cards = data.map((i, index)=>`<div class="card" id="card${index}" style="background-image:url(${i.image})"  ></div>`).join('')
