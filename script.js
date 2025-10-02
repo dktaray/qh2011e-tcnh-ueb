@@ -52,6 +52,9 @@ const destinations = [
 const byId = (id) => document.getElementById(id);
 const cardStage = byId("card-stage");
 const slideNumbers = byId("slide-numbers");
+const progressTrackBackground = document.querySelector(
+  ".progress-track-background"
+);
 
 const cardsMarkup = destinations
   .map(
@@ -91,6 +94,7 @@ let cardHeight = 300;
 let gap = 40;
 let numberSize = 50;
 
+const getTrackWidth = () => progressTrackBackground?.offsetWidth ?? 500;
 const getCard = (index) => `#card${index}`;
 const getCardContent = (index) => `#card-content-${index}`;
 const getSliderItem = (index) => `#slide-item-${index}`;
@@ -153,7 +157,7 @@ const init = () => {
   gsap.set(`${detailsInactive} .action-row`, { y: 60 });
 
   gsap.set(".progress-fill", {
-    width: 500 * (1 / order.length) * (active + 1),
+    width: (getTrackWidth() / order.length) * (active + 1),
   });
 
   rest.forEach((index, position) => {
@@ -211,8 +215,6 @@ const init = () => {
   gsap.to("#pagination", { y: 0, opacity: 1, ease, delay: startDelay });
   gsap.to(detailsActive, { opacity: 1, x: 0, ease, delay: startDelay });
 };
-
-let queuedSteps = 0;
 
 const step = () =>
   new Promise((resolve) => {
@@ -282,7 +284,7 @@ const step = () =>
     gsap.to(getSliderItem(active), { x: 0, ease });
     gsap.to(getSliderItem(previous), { x: -numberSize, ease });
     gsap.to(".progress-fill", {
-      width: 500 * (1 / order.length) * (active + 1),
+      width: (getTrackWidth() / order.length) * (active + 1),
       ease,
     });
 
@@ -321,11 +323,6 @@ const step = () =>
         gsap.set(`${detailsInactive} .title-line--secondary`, { y: 100 });
         gsap.set(`${detailsInactive} .description`, { y: 50 });
         gsap.set(`${detailsInactive} .action-row`, { y: 60 });
-
-        queuedSteps -= 1;
-        if (queuedSteps > 0) {
-          step();
-        }
       },
     });
 
