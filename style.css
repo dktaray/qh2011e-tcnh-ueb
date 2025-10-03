@@ -53,6 +53,20 @@ body {
   box-shadow: var(--card-shadow);
   overflow: hidden;
   border-radius: 0;
+  cursor: pointer;
+}
+
+.slideshow-card--active {
+  cursor: default;
+  pointer-events: none;
+}
+
+.slideshow-card:not(.slideshow-card--active) .slideshow-card-media {
+  transition: transform 0.3s ease;
+}
+
+.slideshow-card:not(.slideshow-card--active):hover .slideshow-card-media {
+  transform: scale(1.05);
 }
 
 .slideshow-card-media {
@@ -68,6 +82,7 @@ body {
   top: 0;
   color: var(--text-color);
   padding-left: 16px;
+  pointer-events: none;
 }
 
 .content-start {
@@ -86,7 +101,7 @@ body {
 .content-title-1,
 .content-title-2 {
   font-weight: 600;
-  font-size: 20px;
+  font-size: 18px;
   font-family: "Oswald", sans-serif;
 }
 
@@ -209,7 +224,7 @@ body {
 .progress-track {
   display: flex;
   align-items: center;
-  width: 500px;
+  width: 360px;
   height: 50px;
   z-index: 60;
 }
