@@ -7,7 +7,7 @@ const projectRoot = join(__dirname, ".." );
 const distDir = join(projectRoot, "dist");
 
 const filesToCopy = ["index.html", "style.css", "script.js"];
-const directoriesToCopy = ["assets", "images", "public"];
+const directoriesToCopy = ["assets", "images", "public", "data"];
 
 async function copyDirectory(source, destination) {
   await mkdir(destination, { recursive: true });
