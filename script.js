@@ -1,53 +1,9 @@
-const destinations = [
-  {
-    place: "Switzerland Alps",
-    title: "SAINT",
-    title2: "ANTONIEN",
-    description:
-      "Tucked away in the Switzerland Alps, Saint Antönien offers an idyllic retreat for those seeking tranquility and adventure alike. It's a hidden gem for backcountry skiing in winter and boasts lush trails for hiking and mountain biking during the warmer months.",
-    image: "https://assets.codepen.io/3685267/timed-cards-1.jpg",
-  },
-  {
-    place: "Japan Alps",
-    title: "NAGANO",
-    title2: "PREFECTURE",
-    description:
-      "Nagano Prefecture, set within the majestic Japan Alps, is a cultural treasure trove with its historic shrines and temples, particularly the famous Zenkō-ji. The region is also a hotspot for skiing and snowboarding, offering some of the country's best powder.",
-    image: "https://assets.codepen.io/3685267/timed-cards-2.jpg",
-  },
-  {
-    place: "Sahara Desert - Morocco",
-    title: "MARRAKECH",
-    title2: "MERZOUGA",
-    description:
-      "The journey from the vibrant souks and palaces of Marrakech to the tranquil, starlit sands of Merzouga showcases the diverse splendor of Morocco. Camel treks and desert camps offer an unforgettable immersion into the nomadic way of life.",
-    image: "https://assets.codepen.io/3685267/timed-cards-3.jpg",
-  },
-  {
-    place: "Sierra Nevada - USA",
-    title: "YOSEMITE",
-    title2: "NATIONAL PARK",
-    description:
-      "Yosemite National Park is a showcase of the American wilderness, revered for its towering granite monoliths, ancient giant sequoias, and thundering waterfalls. The park offers year-round recreational activities, from rock climbing to serene valley walks.",
-    image: "https://assets.codepen.io/3685267/timed-cards-4.jpg",
-  },
-  {
-    place: "Tarifa - Spain",
-    title: "LOS LANCES",
-    title2: "BEACH",
-    description:
-      "Los Lances Beach in Tarifa is a coastal paradise known for its consistent winds, making it a world-renowned spot for kitesurfing and windsurfing. The beach's long, sandy shores provide ample space for relaxation and sunbathing, with a vibrant atmosphere of beach bars and cafes.",
-    image: "https://assets.codepen.io/3685267/timed-cards-5.jpg",
-  },
-  {
-    place: "Cappadocia - Turkey",
-    title: "GÖREME",
-    title2: "VALLEY",
-    description:
-      "Göreme Valley in Cappadocia is a historical marvel set against a unique geological backdrop, where centuries of wind and water have sculpted the landscape into whimsical formations. The valley is also famous for its open-air museums, underground cities, and the enchanting experience of hot air ballooning.",
-    image: "https://assets.codepen.io/3685267/timed-cards-6.jpg",
-  },
-];
+const PREVIEW_MARGIN = 48;
+const PREVIEW_CONTENT_OFFSET = 72;
+const AUTO_RESUME_DELAY = 5000;
+const ease = "sine.inOut";
+
+let destinations = [];
 
 const byId = (id) => document.getElementById(id);
 const cardStage = byId("card-stage");
@@ -56,52 +12,42 @@ const progressTrackBackground = document.querySelector(
   ".progress-track-background"
 );
 
-const cardsMarkup = destinations
-  .map(
-    (item, index) => `
-    <article class="slideshow-card" id="card${index}">
-      <img class="slideshow-card-media" src="${item.image}" alt="${item.place}" loading="lazy" />
-    </article>`
-  )
-  .join("");
+const state = {
+  order: [],
+  detailsEven: true,
+  offsetTop: 200,
+  offsetLeft: 700,
+  cardWidth: 180,
+  cardHeight: 120,
+  gap: 24,
+  numberSize: 50,
+  autoActive: false,
+  isTransitioning: false,
+  resumeTimeout: null,
+};
 
-const cardContentMarkup = destinations
-  .map(
-    (item, index) => `
-    <div class="card-content" id="card-content-${index}">
-      <div class="content-start"></div>
-      <div class="content-place">${item.place}</div>
-      <div class="content-title-1">${item.title}</div>
-      <div class="content-title-2">${item.title2}</div>
-    </div>`
-  )
-  .join("");
-
-cardStage.innerHTML = `${cardsMarkup}${cardContentMarkup}`;
-
-const slideNumberMarkup = destinations
-  .map((_, index) => `<div class="item" id="slide-item-${index}">${index + 1}</div>`)
-  .join("");
-slideNumbers.innerHTML = slideNumberMarkup;
-
-const ease = "sine.inOut";
-let order = destinations.map((_, index) => index);
-let detailsEven = true;
-let offsetTop = 200;
-let offsetLeft = 700;
-let cardWidth = 200;
-let cardHeight = 300;
-let gap = 40;
-let numberSize = 50;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const waitUntilIdle = async () => {
+  while (state.isTransitioning) {
+    await wait(16);
+  }
+};
 
 const getTrackWidth = () => progressTrackBackground?.offsetWidth ?? 500;
 const getCard = (index) => `#card${index}`;
 const getCardContent = (index) => `#card-content-${index}`;
 const getSliderItem = (index) => `#slide-item-${index}`;
 
+const updateActiveCardClass = () => {
+  document.querySelectorAll(".slideshow-card").forEach((card) => {
+    const index = Number(card.dataset.cardIndex);
+    card.classList.toggle("slideshow-card--active", index === state.order[0]);
+  });
+};
+
 const updateDetailsPanel = (selector, content) => {
   const root = document.querySelector(selector);
-  if (!root) return;
+  if (!root || !content) return;
 
   root.querySelector(".location-text").textContent = content.place;
   root.querySelector(".title-line--primary").textContent = content.title;
@@ -114,117 +60,74 @@ const setInitialDetails = () => {
   updateDetailsPanel("#details-odd", destinations[1] ?? destinations[0]);
 };
 
-const animate = (target, duration, properties) =>
-  new Promise((resolve) => {
-    gsap.to(target, {
-      ...properties,
-      duration,
-      onComplete: resolve,
-    });
-  });
-
-const init = () => {
-  const [active, ...rest] = order;
-  const detailsActive = detailsEven ? "#details-even" : "#details-odd";
-  const detailsInactive = detailsEven ? "#details-odd" : "#details-even";
-  const { innerHeight: height, innerWidth: width } = window;
-
-  offsetTop = height - 430;
-  offsetLeft = width - 830;
-
-  gsap.set("#pagination", {
-    top: offsetTop + 330,
-    left: offsetLeft,
-    y: 200,
-    opacity: 0,
-    zIndex: 60,
-  });
-
-  gsap.set(getCard(active), {
-    x: 0,
-    y: 0,
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
-  gsap.set(getCardContent(active), { x: 0, y: 0, opacity: 0 });
-  gsap.set(detailsActive, { opacity: 0, zIndex: 22, x: -200 });
-  gsap.set(detailsInactive, { opacity: 0, zIndex: 12 });
-  gsap.set(`${detailsInactive} .location-text`, { y: 100 });
-  gsap.set(`${detailsInactive} .title-line--primary`, { y: 100 });
-  gsap.set(`${detailsInactive} .title-line--secondary`, { y: 100 });
-  gsap.set(`${detailsInactive} .description`, { y: 50 });
-  gsap.set(`${detailsInactive} .action-row`, { y: 60 });
-
-  gsap.set(".progress-fill", {
-    width: (getTrackWidth() / order.length) * (active + 1),
-  });
-
-  rest.forEach((index, position) => {
-    const xBase = offsetLeft + 400 + position * (cardWidth + gap);
-
-    gsap.set(getCard(index), {
-      x: xBase,
-      y: offsetTop,
-      width: cardWidth,
-      height: cardHeight,
-      zIndex: 30,
-      borderRadius: 10,
-    });
-
-    gsap.set(getCardContent(index), {
-      x: xBase,
-      zIndex: 40,
-      y: offsetTop + cardHeight - 100,
-    });
-
-    gsap.set(getSliderItem(index), { x: (position + 1) * numberSize });
-  });
-
-  gsap.set(".indicator", { x: -window.innerWidth });
-
-  const startDelay = 0.6;
-
-  gsap.to(".cover", {
-    x: width + 400,
-    delay: 0.5,
-    ease,
-    onComplete: () => {
-      setTimeout(() => loop(), 500);
-    },
-  });
-
-  rest.forEach((index, position) => {
-    const xTarget = offsetLeft + position * (cardWidth + gap);
-
-    gsap.to(getCard(index), {
-      x: xTarget,
-      zIndex: 30,
-      ease,
-      delay: startDelay + 0.05 * position,
-    });
-
-    gsap.to(getCardContent(index), {
-      x: xTarget,
-      zIndex: 40,
-      ease,
-      delay: startDelay + 0.05 * position,
-    });
-  });
-
-  gsap.to("#pagination", { y: 0, opacity: 1, ease, delay: startDelay });
-  gsap.to(detailsActive, { opacity: 1, x: 0, ease, delay: startDelay });
+const computePreviewOffsets = (previewCount) => {
+  const { innerHeight, innerWidth } = window;
+  state.offsetTop = Math.max(
+    innerHeight - state.cardHeight - PREVIEW_MARGIN,
+    PREVIEW_MARGIN
+  );
+  const previewWidth =
+    previewCount > 0
+      ? previewCount * state.cardWidth + (previewCount - 1) * state.gap
+      : state.cardWidth;
+  state.offsetLeft = Math.max(
+    innerWidth - previewWidth - PREVIEW_MARGIN,
+    PREVIEW_MARGIN
+  );
 };
 
-const step = () =>
+const renderSlides = () => {
+  const cardsMarkup = destinations
+    .map(
+      (item, index) => `
+        <article class="slideshow-card" id="card${index}" data-card-index="${index}">
+          <img class="slideshow-card-media" src="${item.image}" alt="${item.place}" loading="lazy" />
+        </article>`
+    )
+    .join("");
+
+  const cardContentMarkup = destinations
+    .map(
+      (item, index) => `
+        <div class="card-content" id="card-content-${index}">
+          <div class="content-start"></div>
+          <div class="content-place">${item.place}</div>
+          <div class="content-title-1">${item.title}</div>
+          <div class="content-title-2">${item.title2}</div>
+        </div>`
+    )
+    .join("");
+
+  cardStage.innerHTML = `${cardsMarkup}${cardContentMarkup}`;
+
+  const slideNumberMarkup = destinations
+    .map(
+      (_, index) => `<div class="item" id="slide-item-${index}">${index + 1}</div>`
+    )
+    .join("");
+  slideNumbers.innerHTML = slideNumberMarkup;
+};
+
+const playIndicator = async () => {
+  await animate(".indicator", 2, { x: 0 });
+  await animate(".indicator", 0.8, {
+    x: window.innerWidth,
+    delay: 0.3,
+  });
+  gsap.set(".indicator", { x: -window.innerWidth });
+};
+
+const advance = () =>
   new Promise((resolve) => {
-    order.push(order.shift());
-    detailsEven = !detailsEven;
+    const previousActive = state.order[0];
+    state.order.push(state.order.shift());
+    state.detailsEven = !state.detailsEven;
 
-    const detailsActive = detailsEven ? "#details-even" : "#details-odd";
-    const detailsInactive = detailsEven ? "#details-odd" : "#details-even";
+    const detailsActive = state.detailsEven ? "#details-even" : "#details-odd";
+    const detailsInactive = state.detailsEven ? "#details-odd" : "#details-even";
 
-    updateDetailsPanel(detailsActive, destinations[order[0]]);
+    updateDetailsPanel(detailsActive, destinations[state.order[0]]);
+    updateActiveCardClass();
 
     gsap.set(detailsActive, { zIndex: 22 });
     gsap.to(detailsActive, { opacity: 1, delay: 0.4, ease });
@@ -257,6 +160,20 @@ const step = () =>
       ease,
     });
 
+    computePreviewOffsets(state.order.length - 1);
+
+    gsap.to("#pagination", {
+      top: Math.max(state.offsetTop - 90, PREVIEW_MARGIN),
+      left: state.offsetLeft,
+      ease,
+      delay: 0.15,
+    });
+
+    const [active, ...rest] = state.order;
+    const previous = rest[rest.length - 1];
+
+    gsap.set(detailsInactive, { zIndex: 12 });
+
     gsap.to(`${detailsActive} .action-row`, {
       y: 0,
       delay: 0.35,
@@ -265,26 +182,21 @@ const step = () =>
       onComplete: resolve,
     });
 
-    gsap.set(detailsInactive, { zIndex: 12 });
-
-    const [active, ...rest] = order;
-    const previous = rest[rest.length - 1];
-
     gsap.set(getCard(previous), { zIndex: 10 });
     gsap.set(getCard(active), { zIndex: 20 });
-    gsap.to(getCard(previous), { scale: 1.5, ease });
+    gsap.to(getCard(previous), { scale: 1.2, ease });
 
     gsap.to(getCardContent(active), {
-      y: offsetTop + cardHeight - 10,
+      y: state.offsetTop + state.cardHeight - 32,
       opacity: 0,
       duration: 0.3,
       ease,
     });
 
     gsap.to(getSliderItem(active), { x: 0, ease });
-    gsap.to(getSliderItem(previous), { x: -numberSize, ease });
+    gsap.to(getSliderItem(previous), { x: -state.numberSize, ease });
     gsap.to(".progress-fill", {
-      width: (getTrackWidth() / order.length) * (active + 1),
+      width: (getTrackWidth() / state.order.length) * (active + 1),
       ease,
     });
 
@@ -296,26 +208,29 @@ const step = () =>
       height: window.innerHeight,
       borderRadius: 0,
       onComplete: () => {
-        const xNew = offsetLeft + (rest.length - 1) * (cardWidth + gap);
+        const xNew =
+          state.offsetLeft + (rest.length - 1) * (state.cardWidth + state.gap);
 
         gsap.set(getCard(previous), {
           x: xNew,
-          y: offsetTop,
-          width: cardWidth,
-          height: cardHeight,
+          y: state.offsetTop,
+          width: state.cardWidth,
+          height: state.cardHeight,
           zIndex: 30,
-          borderRadius: 10,
+          borderRadius: 16,
           scale: 1,
         });
 
         gsap.set(getCardContent(previous), {
           x: xNew,
-          y: offsetTop + cardHeight - 100,
+          y: state.offsetTop + state.cardHeight - PREVIEW_CONTENT_OFFSET,
           opacity: 1,
           zIndex: 40,
         });
 
-        gsap.set(getSliderItem(previous), { x: rest.length * numberSize });
+        gsap.set(getSliderItem(previous), {
+          x: rest.length * state.numberSize,
+        });
 
         gsap.set(detailsInactive, { opacity: 0 });
         gsap.set(`${detailsInactive} .location-text`, { y: 100 });
@@ -329,40 +244,139 @@ const step = () =>
     rest.forEach((index, position) => {
       if (index === previous) return;
 
-      const xTarget = offsetLeft + position * (cardWidth + gap);
+      const xTarget =
+        state.offsetLeft + position * (state.cardWidth + state.gap);
 
       gsap.set(getCard(index), { zIndex: 30 });
       gsap.to(getCard(index), {
         x: xTarget,
-        y: offsetTop,
-        width: cardWidth,
-        height: cardHeight,
+        y: state.offsetTop,
+        width: state.cardWidth,
+        height: state.cardHeight,
         ease,
         delay: 0.1 * (position + 1),
+        borderRadius: 16,
       });
 
       gsap.to(getCardContent(index), {
         x: xTarget,
-        y: offsetTop + cardHeight - 100,
+        y: state.offsetTop + state.cardHeight - PREVIEW_CONTENT_OFFSET,
         opacity: 1,
         zIndex: 40,
         ease,
         delay: 0.1 * (position + 1),
       });
 
-      gsap.to(getSliderItem(index), { x: (position + 1) * numberSize, ease });
+      gsap.to(getSliderItem(index), {
+        x: (position + 1) * state.numberSize,
+        ease,
+      });
     });
   });
 
+const runStep = async (withIndicator = true) => {
+  await waitUntilIdle();
+  state.isTransitioning = true;
+  if (withIndicator) {
+    await playIndicator();
+  } else {
+    gsap.set(".indicator", { x: -window.innerWidth });
+  }
+  await advance();
+  state.isTransitioning = false;
+};
+
 const loop = async () => {
-  await animate(".indicator", 2, { x: 0 });
-  await animate(".indicator", 0.8, {
-    x: window.innerWidth,
-    delay: 0.3,
+  if (!state.autoActive) return;
+  await runStep(true);
+  if (state.autoActive) loop();
+};
+
+const stopAutoCycle = () => {
+  state.autoActive = false;
+  clearTimeout(state.resumeTimeout);
+};
+
+const scheduleAutoResume = () => {
+  clearTimeout(state.resumeTimeout);
+  state.resumeTimeout = setTimeout(() => {
+    if (!state.autoActive) {
+      state.autoActive = true;
+      loop();
+    }
+  }, AUTO_RESUME_DELAY);
+};
+
+const handleCardClick = async (event) => {
+  const card = event.target.closest(".slideshow-card");
+  if (!card) return;
+
+  const index = Number(card.dataset.cardIndex);
+  if (!Number.isInteger(index) || index === state.order[0]) return;
+
+  stopAutoCycle();
+  await waitUntilIdle();
+
+  const stepsNeeded = state.order.indexOf(index);
+  if (stepsNeeded <= 0) {
+    scheduleAutoResume();
+    return;
+  }
+
+  for (let i = 0; i < stepsNeeded; i += 1) {
+    await runStep(false);
+  }
+
+  scheduleAutoResume();
+};
+
+const handleResize = async () => {
+  if (!destinations.length) return;
+  await waitUntilIdle();
+
+  computePreviewOffsets(state.order.length - 1);
+  const [active, ...rest] = state.order;
+
+  gsap.set(getCard(active), {
+    x: 0,
+    y: 0,
+    width: window.innerWidth,
+    height: window.innerHeight,
+    borderRadius: 0,
   });
+  gsap.set(getCardContent(active), { x: 0, y: 0, opacity: 0 });
+
+  rest.forEach((index, position) => {
+    const xTarget =
+      state.offsetLeft + position * (state.cardWidth + state.gap);
+
+    gsap.set(getCard(index), {
+      x: xTarget,
+      y: state.offsetTop,
+      width: state.cardWidth,
+      height: state.cardHeight,
+      zIndex: 30,
+      borderRadius: 16,
+    });
+
+    gsap.set(getCardContent(index), {
+      x: xTarget,
+      y: state.offsetTop + state.cardHeight - PREVIEW_CONTENT_OFFSET,
+      opacity: 1,
+      zIndex: 40,
+    });
+
+    gsap.set(getSliderItem(index), {
+      x: (position + 1) * state.numberSize,
+    });
+  });
+
+  gsap.set("#pagination", {
+    top: Math.max(state.offsetTop - 90, PREVIEW_MARGIN),
+    left: state.offsetLeft,
+  });
+
   gsap.set(".indicator", { x: -window.innerWidth });
-  await step();
-  loop();
 };
 
 const loadImage = (src) =>
@@ -375,13 +389,138 @@ const loadImage = (src) =>
 
 const loadImages = () => Promise.all(destinations.map(({ image }) => loadImage(image)));
 
+const fetchDestinations = async () => {
+  const response = await fetch("data/destinations.json");
+  if (!response.ok) {
+    throw new Error("Không thể tải dữ liệu slideshow");
+  }
+
+  const payload = await response.json();
+  if (!Array.isArray(payload.destinations)) {
+    throw new Error("Định dạng dữ liệu không hợp lệ");
+  }
+
+  destinations = payload.destinations;
+};
+
+function init() {
+  const [active, ...rest] = state.order;
+  const detailsActive = state.detailsEven ? "#details-even" : "#details-odd";
+  const detailsInactive = state.detailsEven ? "#details-odd" : "#details-even";
+  const { innerHeight: height, innerWidth: width } = window;
+
+  computePreviewOffsets(rest.length);
+
+  gsap.set("#pagination", {
+    top: Math.max(state.offsetTop - 90, PREVIEW_MARGIN),
+    left: state.offsetLeft,
+    y: 120,
+    opacity: 0,
+    zIndex: 60,
+  });
+
+  gsap.set(getCard(active), {
+    x: 0,
+    y: 0,
+    width: width,
+    height: height,
+  });
+  gsap.set(getCardContent(active), { x: 0, y: 0, opacity: 0 });
+  gsap.set(detailsActive, { opacity: 0, zIndex: 22, x: -200 });
+  gsap.set(detailsInactive, { opacity: 0, zIndex: 12 });
+  gsap.set(`${detailsInactive} .location-text`, { y: 100 });
+  gsap.set(`${detailsInactive} .title-line--primary`, { y: 100 });
+  gsap.set(`${detailsInactive} .title-line--secondary`, { y: 100 });
+  gsap.set(`${detailsInactive} .description`, { y: 50 });
+  gsap.set(`${detailsInactive} .action-row`, { y: 60 });
+
+  gsap.set(".progress-fill", {
+    width: (getTrackWidth() / state.order.length) * (active + 1),
+  });
+
+  rest.forEach((index, position) => {
+    const initialX =
+      state.offsetLeft + (position + 2) * (state.cardWidth + state.gap);
+
+    gsap.set(getCard(index), {
+      x: initialX,
+      y: state.offsetTop + 60,
+      width: state.cardWidth,
+      height: state.cardHeight,
+      zIndex: 30,
+      borderRadius: 16,
+    });
+
+    gsap.set(getCardContent(index), {
+      x: initialX,
+      zIndex: 40,
+      y: state.offsetTop + state.cardHeight - PREVIEW_CONTENT_OFFSET,
+      opacity: 1,
+    });
+
+    gsap.set(getSliderItem(index), { x: (position + 1) * state.numberSize });
+  });
+
+  gsap.set(".indicator", { x: -width });
+  updateActiveCardClass();
+
+  const startDelay = 0.6;
+
+  gsap.to(".cover", {
+    x: width + 400,
+    delay: 0.5,
+    ease,
+    onComplete: () => {
+      setTimeout(() => {
+        state.autoActive = true;
+        loop();
+      }, 500);
+    },
+  });
+
+  rest.forEach((index, position) => {
+    const xTarget =
+      state.offsetLeft + position * (state.cardWidth + state.gap);
+
+    gsap.to(getCard(index), {
+      x: xTarget,
+      y: state.offsetTop,
+      zIndex: 30,
+      ease,
+      delay: startDelay + 0.05 * position,
+    });
+
+    gsap.to(getCardContent(index), {
+      x: xTarget,
+      zIndex: 40,
+      ease,
+      delay: startDelay + 0.05 * position,
+    });
+  });
+
+  gsap.to("#pagination", { y: 0, opacity: 1, ease, delay: startDelay });
+  gsap.to(detailsActive, { opacity: 1, x: 0, ease, delay: startDelay });
+}
+
+const attachEventListeners = () => {
+  cardStage.addEventListener("click", handleCardClick);
+  window.addEventListener("resize", handleResize);
+};
+
 const start = async () => {
   try {
+    await fetchDestinations();
+    if (!destinations.length) return;
+
+    renderSlides();
+    state.order = destinations.map((_, index) => index);
     setInitialDetails();
+    updateActiveCardClass();
+    attachEventListeners();
     await loadImages();
     init();
   } catch (error) {
-    console.error("One or more images failed to load", error);
+    console.error(error);
   }
 };
 
