@@ -76,6 +76,15 @@ const computePreviewOffsets = (previewCount) => {
   );
 };
 
+const animate = (target, duration, properties) =>
+  new Promise((resolve) => {
+    gsap.to(target, {
+      ...properties,
+      duration,
+      onComplete: resolve,
+    });
+  });
+
 const renderSlides = () => {
   const cardsMarkup = destinations
     .map(
