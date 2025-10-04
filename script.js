@@ -554,7 +554,7 @@ const start = async () => {
     await loadImages();
     init();
   } catch (error) {
-    console.error(error);
+    console.error('Start error:', error && error.message ? error.message : error, error);
   }
 };
 
