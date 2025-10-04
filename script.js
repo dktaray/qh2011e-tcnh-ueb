@@ -5,6 +5,14 @@ const ease = "sine.inOut";
 
 let destinations = [];
 
+window.addEventListener('error', (e) => {
+  console.error('Window error:', e && e.error ? e.error : e.message || e);
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('Unhandled rejection:', e && (e.reason || e));
+});
+
 const resolveImagePath = (imagePath) => {
   if (!imagePath) return "";
   if (/^(?:https?:)?\/\//i.test(imagePath) || imagePath.startsWith("data:")) {
