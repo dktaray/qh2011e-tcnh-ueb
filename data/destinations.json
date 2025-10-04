@@ -1,158 +1,46 @@
 {
   "destinations": [
     {
-      "place": "Matterhorn - Switzerland",
-      "title": "ALPINE",
-      "title2": "ZERMATT",
-      "description": "The alpine village of Zermatt sits beneath the iconic Matterhorn, offering sweeping views, world-class slopes, and car-free streets lined with cozy chalets and gourmet restaurants.",
-      "image": "data/img/img-20111105-1.jpg"
+      "place": "2011",
+      "title": "K56-2011e-TCNH",
+      "title2": "ANTONIEN",
+      "description": "",
+      "image": "img/img-20111105-1.jpg"
     },
     {
-      "place": "Nagano Highlands - Japan",
-      "title": "HIDA",
-      "title2": "RIDGES",
-      "description": "Nagano's Hida Mountains blend forested valleys with snow-capped peaks, inviting travelers to soak in hot springs after days spent exploring ski resorts and historic post towns.",
-      "image": "data/img/img-20111105-2.jpg"
+      "place": "",
+      "title": "",
+      "title2": "",
+      "description": ".",
+      "image": "img/img-20111105-2.jpg"
     },
     {
-      "place": "Merzouga Dunes - Morocco",
-      "title": "SAHARA",
-      "title2": "MERZOUGA",
-      "description": "Merzouga's towering orange dunes glow at sunrise and sunset, offering camel treks, nomadic music under starlit skies, and an unforgettable introduction to the Moroccan Sahara.",
-      "image": "data/img/img-20111105.jpg"
+      "place": "2011",
+      "title": "",
+      "title2": "",
+      "description": "",
+      "image": "img/img-20111105.jpg"
     },
     {
-      "place": "Dolomites - Italy",
-      "title": "DOLOMITI",
-      "title2": "PASSO",
-      "description": "The dramatic spires of the Dolomites rise above meadows filled with alpine flowers, where winding passes and rifugios welcome hikers, cyclists, and climbers from around the world.",
-      "image": "data/img/img-20121012-1.jpg"
+      "place": "",
+      "title": "",
+      "title2": "",
+      "description": "Y",
+      "image": "img/"
     },
     {
-      "place": "Santorini - Greece",
-      "title": "AEGEAN",
-      "title2": "CALDERA",
-      "description": "Whitewashed homes and sapphire-domed chapels cascade down the cliffs of Santorini, framing sunsets that paint the Aegean Sea in molten gold and crimson hues.",
-      "image": "data/img/img-20121012.jpg"
+      "place": "",
+      "title": "LOS LANCES",
+      "title2": "BEACH",
+      "description": "",
+      "image": "img/img-20240312-4.jpg"
     },
     {
-      "place": "Hallstatt - Austria",
-      "title": "SALZKAMMER",
-      "title2": "GUT",
-      "description": "Hallstatt's mirror-like lake reflects pastel cottages and steep mountains, while ancient salt mines and lakeside promenades tell the story of Austria's oldest village.",
-      "image": "data/img/img-20130422-1.jpg"
-    },
-    {
-      "place": "Isle of Skye - Scotland",
-      "title": "CUILLIN",
-      "title2": "RIDGE",
-      "description": "The rugged landscapes of the Isle of Skye mix jagged peaks, fairy pools, and misty moors, making it a dream destination for photographers and hikers alike.",
-      "image": "data/img/img-20130422.jpg"
-    },
-    {
-      "place": "Banff National Park - Canada",
-      "title": "MORAINE",
-      "title2": "VALLEY",
-      "description": "Banff National Park dazzles with turquoise lakes, glacier-carved valleys, and wildlife-rich forests, granting endless adventures across the Canadian Rockies.",
-      "image": "data/img/img-20140622.jpg"
-    },
-    {
-      "place": "Big Sur - USA",
-      "title": "PACIFIC",
-      "title2": "CLIFFS",
-      "description": "Big Sur's Highway 1 hugs sheer cliffs that plunge into the Pacific, where redwood groves, hidden beaches, and ocean vistas inspire soulful road trips.",
-      "image": "data/img/img-20140701.jpg"
-    },
-    {
-      "place": "Landmannalaugar - Iceland",
-      "title": "FJALLABAK",
-      "title2": "NATURE",
-      "description": "Landmannalaugar's rainbow rhyolite mountains and steaming geothermal vents create an otherworldly playground for trekkers traversing Iceland's highlands.",
-      "image": "data/img/img-20141020.jpg"
-    },
-    {
-      "place": "El Chaltén - Argentina",
-      "title": "FITZ",
-      "title2": "ROY",
-      "description": "El Chaltén, the trekking capital of Argentina, delivers panoramas of jagged granite spires, icy lagoons, and Patagonian steppe swept by dramatic winds.",
-      "image": "data/img/img-20150319.jpg"
-    },
-    {
-      "place": "Petra - Jordan",
-      "title": "ROSE",
-      "title2": "CITY",
-      "description": "Petra's rose-red facades emerge from sandstone cliffs, where ancient Nabataean engineering carved temples, tombs, and hidden canyons into desert stone.",
-      "image": "data/img/img-20150413.jpg"
-    },
-    {
-      "place": "Tegalalang - Indonesia",
-      "title": "UBUD",
-      "title2": "TERRACES",
-      "description": "The tiered rice fields of Tegalalang cascade down Bali's lush hillsides, showcasing traditional irrigation and a tapestry of emerald green landscapes.",
-      "image": "data/img/img-20150415.jpg"
-    },
-    {
-      "place": "Tromsø - Norway",
-      "title": "AURORA",
-      "title2": "ARCTIC",
-      "description": "Tromsø's winter sky often erupts with northern lights, revealing ribbons of green and violet above snow-dusted fjords and lively Arctic streets.",
-      "image": "data/img/img-20171119.jpg"
-    },
-    {
-      "place": "Sapa - Vietnam",
-      "title": "FANSIPAN",
-      "title2": "TERRACES",
-      "description": "Sapa's terraced slopes curl around misty valleys where ethnic minority communities cultivate rice fields and share vibrant highland culture.",
-      "image": "data/img/img-20190118.jpg"
-    },
-    {
-      "place": "Chefchaouen - Morocco",
-      "title": "BLUE",
-      "title2": "MEDINA",
-      "description": "Chefchaouen's blue-washed medina invites leisurely strolls through narrow alleys filled with artisan shops, mountain views, and fragrant couscous kitchens.",
-      "image": "data/img/img-20240312-1.jpg"
-    },
-    {
-      "place": "Alfama - Portugal",
-      "title": "LISBON",
-      "title2": "HILLS",
-      "description": "Lisbon's Alfama quarter weaves steep cobblestone lanes past fado taverns, tiled facades, and miradouros overlooking the glittering Tagus River.",
-      "image": "data/img/img-20240312-2.jpg"
-    },
-    {
-      "place": "Arashiyama - Japan",
-      "title": "BAMBOO",
-      "title2": "GROVE",
-      "description": "Kyoto's Arashiyama district blends tranquil bamboo forests with historic temples, traditional river cruises, and spring cherry blossom spectacles.",
-      "image": "data/img/img-20240312-3.jpg"
-    },
-    {
-      "place": "Queenstown - New Zealand",
-      "title": "WAKATIPU",
-      "title2": "ALPS",
-      "description": "Queenstown balances adventure sports and serene scenery, where Lake Wakatipu meets the Remarkables mountain range and inspires thrill-seekers year-round.",
-      "image": "data/img/img-20240312-4.jpg"
-    },
-    {
-      "place": "Namib Desert - Namibia",
-      "title": "SOSSUS",
-      "title2": "VLEI",
-      "description": "The Namib Desert's towering dunes glow in shades of apricot and gold, encircling the stark white clay pan of Sossusvlei and its skeletal camel thorn trees.",
-      "image": "data/img/img-20240312-5.jpg"
-    },
-    {
-      "place": "Reykjanes Peninsula - Iceland",
-      "title": "ATLANTIC",
-      "title2": "BRIDGE",
-      "description": "Steam vents, lava fields, and crashing Atlantic waves define the Reykjanes Peninsula, where visitors can straddle the Mid-Atlantic Ridge between continents.",
-      "image": "data/img/img-20240312-6.jpg"
-    },
-    {
-      "place": "Antelope Canyon - USA",
-      "title": "NAVAJO",
-      "title2": "CANYON",
-      "description": "Antelope Canyon's sculpted sandstone walls glow with shifting light beams, revealing patterns carved by flash floods through Navajo tribal lands.",
-      "image": "data/img/img-20240312.jpg"
+      "place": "",
+      "title": "",
+      "title2": "",
+      "description": "",
+      "image": "img/img-20240312-5.jpg"
     }
   ]
 }
