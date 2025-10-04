@@ -406,7 +406,7 @@ const loadImage = (src) =>
   new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = reject;
+    img.onerror = (ev) => reject(new Error(`Failed to load image: ${src}`));
     img.src = src;
   });
 
