@@ -5,6 +5,28 @@ const ease = "sine.inOut";
 
 let destinations = [];
 
+window.addEventListener('error', (e) => {
+  console.error('Window error:', e && e.error ? e.error : e.message || e);
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('Unhandled rejection:', e && (e.reason || e));
+});
+
+const resolveImagePath = (imagePath) => {
+  if (!imagePath) return "";
+  if (/^(?:https?:)?\/\//i.test(imagePath) || imagePath.startsWith("data:")) {
+    return imagePath;
+  }
+
+  const normalizedPath = imagePath.replace(/^\.\/+/, "");
+  if (normalizedPath.startsWith("data/")) {
+    return normalizedPath;
+  }
+
+  return `data/${normalizedPath}`;
+};
+
 const byId = (id) => document.getElementById(id);
 const cardStage = byId("card-stage");
 const slideNumbers = byId("slide-numbers");
@@ -388,11 +410,28 @@ const handleResize = async () => {
   gsap.set(".indicator", { x: -window.innerWidth });
 };
 
-const loadImage = (src) =>
+const normalizeImageSrc = (src) => {
+  if (!src) return src;
+  // fix common typo .ipg -> .jpg
+  if (src.endsWith('.ipg')) return src.replace(/\.ipg$/i, '.jpg');
+  return src;
+};
+
+const loadImage = (src, tried = false) =>
   new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = reject;
+    img.onerror = () => {
+      if (!tried) {
+        const corrected = normalizeImageSrc(src);
+        if (corrected !== src) {
+          // try corrected filename once
+          loadImage(corrected, true).then(resolve).catch(reject);
+          return;
+        }
+      }
+      reject(new Error(`Failed to load image: ${src}`));
+    };
     img.src = src;
   });
 
@@ -409,7 +448,10 @@ const fetchDestinations = async () => {
     throw new Error("Định dạng dữ liệu không hợp lệ");
   }
 
-  destinations = payload.destinations;
+  destinations = payload.destinations.map((destination) => ({
+    ...destination,
+    image: resolveImagePath(destination.image),
+  }));
 };
 
 function init() {
@@ -529,7 +571,7 @@ const start = async () => {
     await loadImages();
     init();
   } catch (error) {
-    console.error(error);
+    console.error('Start error:', error && error.message ? error.message : error, error);
   }
 };
 
