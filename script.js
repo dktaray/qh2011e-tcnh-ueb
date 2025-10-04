@@ -5,6 +5,20 @@ const ease = "sine.inOut";
 
 let destinations = [];
 
+const resolveImagePath = (imagePath) => {
+  if (!imagePath) return "";
+  if (/^(?:https?:)?\/\//i.test(imagePath) || imagePath.startsWith("data:")) {
+    return imagePath;
+  }
+
+  const normalizedPath = imagePath.replace(/^\.\/+/, "");
+  if (normalizedPath.startsWith("data/")) {
+    return normalizedPath;
+  }
+
+  return `data/${normalizedPath}`;
+};
+
 const byId = (id) => document.getElementById(id);
 const cardStage = byId("card-stage");
 const slideNumbers = byId("slide-numbers");
@@ -406,10 +420,13 @@ const fetchDestinations = async () => {
 
   const payload = await response.json();
   if (!Array.isArray(payload.destinations)) {
-    throw new Error("Định dạng dữ liệu không hợp lệ");
+    throw new Error("Định dạng d�� liệu không hợp lệ");
   }
 
-  destinations = payload.destinations;
+  destinations = payload.destinations.map((destination) => ({
+    ...destination,
+    image: resolveImagePath(destination.image),
+  }));
 };
 
 function init() {
