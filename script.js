@@ -420,7 +420,7 @@ const fetchDestinations = async () => {
 
   const payload = await response.json();
   if (!Array.isArray(payload.destinations)) {
-    throw new Error("Định dạng d�� liệu không hợp lệ");
+    throw new Error("Định dạng dữ liệu không hợp lệ");
   }
 
   destinations = payload.destinations.map((destination) => ({
