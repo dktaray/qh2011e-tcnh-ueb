@@ -410,11 +410,28 @@ const handleResize = async () => {
   gsap.set(".indicator", { x: -window.innerWidth });
 };
 
-const loadImage = (src) =>
+const normalizeImageSrc = (src) => {
+  if (!src) return src;
+  // fix common typo .ipg -> .jpg
+  if (src.endsWith('.ipg')) return src.replace(/\.ipg$/i, '.jpg');
+  return src;
+};
+
+const loadImage = (src, tried = false) =>
   new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = (ev) => reject(new Error(`Failed to load image: ${src}`));
+    img.onerror = () => {
+      if (!tried) {
+        const corrected = normalizeImageSrc(src);
+        if (corrected !== src) {
+          // try corrected filename once
+          loadImage(corrected, true).then(resolve).catch(reject);
+          return;
+        }
+      }
+      reject(new Error(`Failed to load image: ${src}`));
+    };
     img.src = src;
   });
 
