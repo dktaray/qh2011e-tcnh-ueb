@@ -6,7 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, ".." );
 const distDir = join(projectRoot, "dist");
 
-const filesToCopy = ["index.html", "style.css", "script.js"];
+const filesToCopy = ["index.html", "about.html", "style.css", "script.js"];
 const directoriesToCopy = ["assets", "images", "public", "data"];
 
 async function copyDirectory(source, destination) {
