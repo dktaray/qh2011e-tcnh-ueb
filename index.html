@@ -11,73 +11,47 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
+
+    <style>
+      /* --- Nút bật/tắt nhạc cố định góc phải trên --- */
+      #music-toggle {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 9999;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        padding: 8px 14px;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(6px);
+      }
+      #music-toggle:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: scale(1.05);
+      }
+    </style>
   </head>
+
   <body>
-    <div style="padding:12px 16px; display:flex; justify-content:flex-end; align-items:center; gap:12px;">
-      <button id="music-toggle" aria-pressed="false" aria-label="Bật / tắt nhạc nền" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer;">Bật nhạc</button>
-      <audio id="bg-music" loop preload="auto">
-        <source src="data/music/background.mp3" type="audio/mpeg">
-        <!-- Nếu bạn có file .ogg, thêm dưới đây để tăng tương thích -->
-        <!-- <source src="data/music/background.ogg" type="audio/ogg"> -->
-        Trình duyệt của bạn không hỗ trợ thẻ audio.
-      </audio>
-    </div>
+    <!-- 🔊 Nút bật/tắt nhạc nổi cố định -->
+    <button id="music-toggle" aria-pressed="false" aria-label="Bật / tắt nhạc nền">
+      🔊 Bật nhạc
+    </button>
 
-    <script>
-      // Thiết lập nút Play/Pause cho bg-music
-      (function () {
-        const audio = document.getElementById('bg-music');
-        const btn = document.getElementById('music-toggle');
+    <!-- 🎵 Nhạc nền -->
+    <audio id="bg-music" loop preload="auto">
+      <source src="data/music/background.mp3" type="audio/mpeg" />
+      Trình duyệt của bạn không hỗ trợ thẻ audio.
+    </audio>
 
-        // Cập nhật trạng thái nút theo audio
-        function updateButton() {
-          if (audio && btn) {
-            if (audio.paused) {
-              btn.textContent = 'Bật nhạc';
-              btn.setAttribute('aria-pressed', 'false');
-            } else {
-              btn.textContent = 'Tắt nhạc';
-              btn.setAttribute('aria-pressed', 'true');
-            }
-          }
-        }
-
-        // Thử autoplay (nhiều trình duyệt sẽ chặn nếu không có tương tác)
-        // Nếu bị chặn thì người dùng có thể nhấn nút để bật.
-        window.addEventListener('load', async () => {
-          try {
-            // Không đặt muted ở đây — thử phát để xem nếu trình duyệt cho phép
-            await audio.play();
-          } catch (err) {
-            // Autoplay bị chặn — giữ ở trạng thái paused
-            // Bạn có thể thử audio.muted = true; audio.play(); để autoplay im lặng
-            // rồi unmute sau khi người dùng tương tác.
-            // console.log('Autoplay blocked:', err);
-          }
-          updateButton();
-        });
-
-        btn.addEventListener('click', async () => {
-          try {
-            if (audio.paused) {
-              await audio.play();
-            } else {
-              audio.pause();
-            }
-          } catch (err) {
-            console.warn('Không thể phát/paus nhạc:', err);
-          }
-          updateButton();
-        });
-
-        // Nếu audio kết thúc (nên không xảy ra vì loop), cập nhật nút
-        audio.addEventListener('play', updateButton);
-        audio.addEventListener('pause', updateButton);
-      })();
-    </script>
+    <!-- --- Phần slideshow (giữ nguyên) --- -->
     <div class="slideshow">
       <div class="progress-bar indicator"></div>
-      <div id="card-stage" class="card-stage"></div>     
+      <div id="card-stage" class="card-stage"></div>
 
       <div id="pagination" class="pagination">
         <div class="progress-track" aria-hidden="true">
@@ -86,13 +60,69 @@
           </div>
         </div>
         <div id="slide-numbers" class="slide-index" aria-hidden="true"></div>
-        <button class="pause-button" type="button" aria-pressed="false" aria-label="Pause slideshow" title="Pause slideshow"> </button>
+        <button
+          class="pause-button"
+          type="button"
+          aria-pressed="false"
+          aria-label="Pause slideshow"
+          title="Pause slideshow"
+        ></button>
       </div>
 
       <div class="transition-cover cover" aria-hidden="true"></div>
     </div>
 
+    <!-- GSAP (hiệu ứng chuyển động) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+
+    <script>
+      // === Điều khiển nhạc nền ===
+      window.addEventListener("DOMContentLoaded", () => {
+        const audio = document.getElementById("bg-music");
+        const btn = document.getElementById("music-toggle");
+
+        // Cập nhật trạng thái hiển thị nút
+        function updateButton() {
+          if (audio.paused) {
+            btn.textContent = "🔊 Bật nhạc";
+            btn.setAttribute("aria-pressed", "false");
+          } else {
+            btn.textContent = "🔈 Tắt nhạc";
+            btn.setAttribute("aria-pressed", "true");
+          }
+        }
+
+        // Thử autoplay khi trang mở (nếu bị chặn, user có thể click)
+        window.addEventListener("load", async () => {
+          try {
+            await audio.play();
+          } catch (err) {
+            // Nếu bị chặn thì chỉ chờ click người dùng
+            console.log("Autoplay bị chặn — chờ người dùng bấm nút.");
+          }
+          updateButton();
+        });
+
+        // Khi người dùng nhấn nút
+        btn.addEventListener("click", async () => {
+          try {
+            if (audio.paused) {
+              await audio.play();
+            } else {
+              audio.pause();
+            }
+            updateButton();
+          } catch (err) {
+            console.warn("Không thể phát hoặc tạm dừng nhạc:", err);
+          }
+        });
+
+        // Nếu có thay đổi trạng thái audio
+        audio.addEventListener("play", updateButton);
+        audio.addEventListener("pause", updateButton);
+      });
+    </script>
+
     <script src="script.js" defer></script>
   </body>
 </html>
