@@ -217,6 +217,45 @@
     width: 100%;
     height: auto;
   }
+
+  .music-icon {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: radial-gradient(circle at center, #d87c7c 0%, #b94bc0 100%);
+    box-shadow: 0 0 15px rgba(255, 180, 220, 0.8);
+    font-size: 26px;
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.4s ease;
+    animation: fadeIn 1.5s ease;
+  }
+
+  .music-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(255, 220, 255, 1);
+  }
+
+  .music-icon.playing {
+    background: radial-gradient(circle at center, #7a36ca 0%, #516b91 100%);
+    animation: pulseGlow 1.8s infinite ease-in-out, rotateSlow 6s linear infinite;
+  }
+
+  @keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px rgba(255,255,255,0.6); }
+    50% { box-shadow: 0 0 30px rgba(255,200,255,1); }
+    100% { box-shadow: 0 0 10px rgba(255,255,255,0.6); }
+  }
+
+  @keyframes rotateSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
@@ -231,6 +270,12 @@
       NGÀY 01/11/2025
     </p>
   </header>
+  <!-- 🎵 Nút phát nhạc -->
+  <button id="music-btn" class="music-icon" aria-label="Phát nhạc">
+    🔊
+  </button>
+
+  <audio id="bg-music" src="data/music/background.mp3" preload="auto" loop></audio>
 
   <!-- Hai GIF hai bên -->
   <div class="side-gif left">
@@ -265,6 +310,10 @@
     <p>🎓 Hân hoan chào mừng QH2011E - TCNH - UEB  
     <br>📍 Hà Nội — Ngày 01/11/2025</p>
   </footer>
+
+  <!-- 🎵 Nhạc nền -->
+  <audio id="bg-music" src="data/music/background.mp3" preload="auto" loop></audio>
+
 
 <script>
   // Hiển thị danh sách thành viên chạy ngang
@@ -324,6 +373,58 @@
       g.style.transform = `translateY(calc(-50% + ${scrollY * 0.1}px))`;
     });
   });
+
+  // phát nhạc
+  document.addEventListener("DOMContentLoaded", async () => {
+    const btn = document.getElementById("music-btn");
+    const audio = document.getElementById("bg-music");
+    let isPlaying = false;
+
+    // Bắt đầu volume từ nhỏ để fade-in
+    audio.volume = 0;
+
+    // Hàm tăng dần âm lượng
+    function fadeInAudio() {
+      let volume = 0;
+      const fade = setInterval(() => {
+        if (volume < 1.0) {
+          volume += 0.02;
+          audio.volume = Math.min(volume, 1.0);
+        } else {
+          clearInterval(fade);
+        }
+      }, 200);
+    }
+
+    // Thử tự phát nhạc (nhiều trình duyệt có thể chặn)
+    try {
+      await audio.play();
+      fadeInAudio();
+      isPlaying = true;
+      btn.classList.add("playing");
+    } catch (err) {
+      console.warn("Trình duyệt chặn autoplay, người dùng cần click để phát nhạc:", err);
+    }
+
+    // Khi người dùng click vào icon
+    btn.addEventListener("click", async () => {
+      if (!isPlaying) {
+        try {
+          await audio.play();
+          fadeInAudio();
+          btn.classList.add("playing");
+          isPlaying = true;
+        } catch (err) {
+          console.warn("Không thể phát nhạc:", err);
+        }
+      } else {
+        audio.pause();
+        btn.classList.remove("playing");
+        isPlaying = false;
+      }
+    });
+  });
+
 </script>
 </body>
 </html>
