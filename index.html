@@ -48,11 +48,10 @@
       Trình duyệt của bạn không hỗ trợ thẻ audio.
     </audio>
 
-    <!-- --- Phần slideshow (giữ nguyên) --- -->
+    <!-- --- Slideshow hoặc nội dung khác --- -->
     <div class="slideshow">
       <div class="progress-bar indicator"></div>
       <div id="card-stage" class="card-stage"></div>
-
       <div id="pagination" class="pagination">
         <div class="progress-track" aria-hidden="true">
           <div class="progress-track-background">
@@ -68,7 +67,6 @@
           title="Pause slideshow"
         ></button>
       </div>
-
       <div class="transition-cover cover" aria-hidden="true"></div>
     </div>
 
@@ -76,12 +74,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
 
     <script>
-      // === Điều khiển nhạc nền ===
+      // === Điều khiển nhạc nền có fade-in ===
       window.addEventListener("DOMContentLoaded", () => {
         const audio = document.getElementById("bg-music");
         const btn = document.getElementById("music-toggle");
 
-        // Cập nhật trạng thái hiển thị nút
+        // Cập nhật nút
         function updateButton() {
           if (audio.paused) {
             btn.textContent = "🔊 Bật nhạc";
@@ -92,12 +90,28 @@
           }
         }
 
-        // Thử autoplay khi trang mở (nếu bị chặn, user có thể click)
+        // Hàm fade-in âm lượng (0 -> 1)
+        function fadeInAudio(duration = 3000) {
+          audio.volume = 0;
+          const step = 0.05;
+          const interval = (duration * step) / 1000;
+          const fade = setInterval(() => {
+            if (audio.volume < 1) {
+              audio.volume = Math.min(audio.volume + step, 1);
+            } else {
+              clearInterval(fade);
+            }
+          }, interval);
+        }
+
+        // Thử autoplay (có thể bị chặn)
         window.addEventListener("load", async () => {
           try {
+            // trick: autoplay với âm lượng 0 để tránh bị chặn
+            audio.volume = 0;
             await audio.play();
+            fadeInAudio(4000); // fade in trong 4 giây
           } catch (err) {
-            // Nếu bị chặn thì chỉ chờ click người dùng
             console.log("Autoplay bị chặn — chờ người dùng bấm nút.");
           }
           updateButton();
@@ -107,17 +121,18 @@
         btn.addEventListener("click", async () => {
           try {
             if (audio.paused) {
+              audio.volume = 0;
               await audio.play();
+              fadeInAudio(3000);
             } else {
               audio.pause();
             }
-            updateButton();
           } catch (err) {
             console.warn("Không thể phát hoặc tạm dừng nhạc:", err);
           }
+          updateButton();
         });
 
-        // Nếu có thay đổi trạng thái audio
         audio.addEventListener("play", updateButton);
         audio.addEventListener("pause", updateButton);
       });
