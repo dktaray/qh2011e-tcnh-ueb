@@ -141,7 +141,7 @@
     100% { transform: translateX(-50%); }
   }
 
-  /* Pháo hoa */
+  /* Hiệu ứng phụ */
   .firework {
     position: fixed;
     top: 50%;
@@ -160,7 +160,6 @@
     100% { opacity: 0; transform: scale(30); }
   }
 
-  /* Hoa rơi */
   .flower {
     position: fixed;
     top: -10px;
@@ -194,11 +193,31 @@
     to { opacity: 1; }
   }
 
-  @keyframes fadeIn1 {
-  0% {opacity:0; transform:translateY(10px) scale(0.95);}
-  60%{opacity:1; transform:translateY(-2px) scale(1.02);}
-  100%{opacity:1; transform:translateY(0) scale(1);}
-}
+  /* 🎞️ Hai ảnh GIF hai bên */
+  .side-gif {
+    position: fixed;
+    top: 50%;
+    width: 180px;
+    transform: translateY(-50%);
+    z-index: 800;
+    opacity: 0.95;
+    transition: transform 0.3s ease-out;
+  }
+
+  .side-gif.left {
+    left: 20px;
+  }
+
+  .side-gif.right {
+    right: 20px;
+  }
+
+  .side-gif img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  }
 </style>
 </head>
 <body>
@@ -207,25 +226,28 @@
     <h1>Kỷ Niệm 10 Năm Tốt Nghiệp QH2011E - TCNH - UEB</h1>
     <p>Những năm tháng thanh xuân - Nơi kỷ niệm mãi còn</p>
     <h2>TRÂN TRỌNG KÍNH MỜI TOÀN THỂ THÀNH VIÊN QH2011E - TCNH - UEB</h2>
-    <p style="font-size:42px;
-           font-weight:800;
-           letter-spacing:2px;
-           text-transform:uppercase;
-           font-family:'Inter',sans-serif;
-           color:#d87c7c;
-           text-shadow:2px 2px 4px rgba(0,0,0,0.15);
-           animation:fadeIn 1.2s ease-out;">
+    <p style="font-size:42px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
+      font-family:'Inter',sans-serif; color:#d87c7c; text-shadow:2px 2px 4px rgba(0,0,0,0.15);
+      animation:fadeIn 1.2s ease-out;">
       NGÀY 01/11/2025
     </p>
   </header>
+
+  <!-- Hai GIF hai bên -->
+  <div class="side-gif left">
+    <img src="data/img/hungbui-gif.gif" alt="Hung Bui GIF" />
+  </div>
+  <div class="side-gif right">
+    <img src="data/img/hoang-gif.gif" alt="Hoang GIF" />
+  </div>
 
   <section class="schedule">
     <h2>⏰ Lịch Trình</h2>
     <ul>
       <li>15:00 - Tập trung tại UEB & chụp ảnh lưu niệm</li>
       <li>17:30 - Di chuyển đến địa điểm liên hoan</li>
-      <li>18:30 - Bữa tiệc liên hoan: Bò An Khang - 102 Vũ Phạm Hàm, Cầu Giấy”</li>
-      <li>Rồi sau đó - Giao lưu & liveshow văn nghệ</li>
+      <li>18:30 - Bữa tiệc liên hoan: Bò An Khang - 102 Vũ Phạm Hàm, Cầu Giấy</li>
+      <li>Sau đó - Giao lưu & liveshow văn nghệ</li>
     </ul>
   </section>
 
@@ -246,107 +268,30 @@
   </footer>
 
 <script>
-  // Danh sách sinh viên vinh danh
-  const honorees = [
-    { name: "1. Bùi Quang Hưng", title: "Lớp trưởng" },
-    { name: "2. Hoàng Thu Thảo", title: "Lớp phó" },
-    { name: "3. Nguyễn Huy Hoàng", title: "Bí thư Đoàn" },
-    { name: "4. Đinh Anh Tuấn", title: "Chủ tịch HSV" },
-    { name: "5. Đinh Khắc Tuấn Anh", title: "Thành viên" },
-    { name: "6. Đỗ Tùng Anh", title: "Thành viên" },
-    { name: "7. Nguyễn Minh Công", title: "Thành viên" },
-    { name: "8. Nguyễn Thị Cúc", title: "Thành viên" },
-    { name: "9. Nguyễn Thị Dịu (07/10)", title: "Thành viên" },
-    { name: "10. Nguyễn Thị Dịu (08/05)", title: "Thành viên" },
-    { name: "11. Vũ Hoàng Dương", title: "Thành viên" },
-    { name: "12. Đào Linh Giang", title: "Thành viên" },
-    { name: "13. Đào Thị Thanh Giang", title: "Thành viên" },
-    { name: "14. Hoàng Hồng Giang", title: "Thành viên" },
-    { name: "15. Lê Thị Thu Hà", title: "Thành viên" },
-    { name: "16. Lâm Thanh Hà", title: "Thành viên" },
-    { name: "17. Nguyễn Lê Hà", title: "Thành viên" },
-    { name: "18. Đào Thị Hạnh", title: "Thành viên" },
-    { name: "19. Đoàn Thị Thanh Hằng", title: "Thành viên" },
-    { name: "20. Phạm Thu Hằng", title: "Thành viên" },
-    { name: "21. Nguyễn Thị Hậu", title: "Thành viên" },
-    { name: "22. Nguyễn Thị Hiền", title: "Thành viên" },
-    { name: "23. Nguyễn Thị Huế", title: "Thành viên" },
-    { name: "24. Vương Thị Kim Huệ", title: "Thành viên" },
-    { name: "25. Bùi Thị Huệ", title: "Thành viên" },
-    { name: "26. Lương Quốc Hùng", title: "Thành viên" },
-    { name: "27. Doãn Thế Hưng", title: "Thành viên" },
-    { name: "28. Vàng Thu Hương", title: "Thành viên" },
-    { name: "29. Hoàng Thị Mai Hương", title: "Thành viên" },
-    { name: "30. Nguyễn Thị Hương", title: "Thành viên" },
-    { name: "31. Bùi Thị Hương Lan", title: "Thành viên" },
-    { name: "32. Mai Thị Lan", title: "Thành viên" },
-    { name: "33. Đặng Thị Lan", title: "Thành viên" },
-    { name: "34. Lê Thùy Linh", title: "Thành viên" },
-    { name: "35. Nguyễn Thị Thùy Linh", title: "Thành viên" },
-    { name: "36. Nguyễn Thị Kiều Linh", title: "Thành viên" },
-    { name: "37. Nguyễn Trọng Lịch", title: "Thành viên" },
-    { name: "38. Tạ Bích Loan", title: "Thành viên" },
-    { name: "39. Trần Phương Loan", title: "Thành viên" },
-    { name: "40. Hoàng Thị Hồng Loan", title: "Thành viên" },
-    { name: "41. Nguyễn Thị Luyên", title: "Thành viên" },
-    { name: "42. Cao Thị Luyến", title: "Thành viên" },
-    { name: "43. Lê Thanh Mai", title: "Thành viên" },
-    { name: "44. Quách Thị Mai", title: "Thành viên" },
-    { name: "45. Nguyễn Phương Nhật Mai", title: "Thành viên" },
-    { name: "46. Hoàng Thị Mị", title: "Thành viên" },
-    { name: "47. Trần Giang Nam", title: "Thành viên" },
-    { name: "48. Trương Thị Ngân", title: "Thành viên" },
-    { name: "49. Bùi Thị Nga", title: "Thành viên" },
-    { name: "50. Nguyễn Thị Thanh Nhàn", title: "Thành viên" },
-    { name: "51. Nhâm Thị Oanh", title: "Thành viên" },
-    { name: "52. Dương Thị Hồng Phương", title: "Thành viên" },
-    { name: "53. Phùng Thu Phương", title: "Thành viên" },
-    { name: "54. Vũ Thị Minh Phượng", title: "Thành viên" },
-    { name: "55. Nguyễn Trúc Quỳnh", title: "Thành viên" },
-    { name: "56. Đậu Thị Như Quỳnh", title: "Thành viên" },
-    { name: "57. Hoàng Thị Quỳnh", title: "Thành viên" },
-    { name: "58. Hoàng Trần Sơn", title: "Thành viên" },
-    { name: "59. Vương Dạ Thảo", title: "Thành viên" },
-    { name: "60. Hoàng Thị Thảo", title: "Thành viên" },
-    { name: "61. Trịnh Phương Thảo", title: "Thành viên" },
-    { name: "62. Cao Thị Yến Thanh", title: "Thành viên" },
-    { name: "63. Nguyễn Tiến Thành", title: "Thành viên" },
-    { name: "64. Trương Thị Thu", title: "Thành viên" },
-    { name: "65. Nguyễn Thanh Thùy", title: "Thành viên" },
-    { name: "66. Nguyễn Thị Hương Thúy", title: "Thành viên" },
-    { name: "67. Trần Thị Thương", title: "Thành viên" },
-    { name: "68. Trác Thị Thủy", title: "Thành viên" },
-    { name: "69. Cao Thu Trang", title: "Thành viên" },
-    { name: "70. Ngô Thị Kiều Trang", title: "Thành viên" },
-    { name: "71. Đinh Thị Thu Trang", title: "Thành viên" },
-    { name: "72. Dương Thị Thùy Trang", title: "Thành viên" },
-    { name: "73. Lê Huyền Trang", title: "Thành viên" },
-    { name: "74. Đặng Minh Tuấn", title: "Thành viên" },
-    { name: "75. Phạm Văn Tùng", title: "Thành viên" },
-    { name: "76. Lê Thúy Vinh", title: "Thành viên" },
-    { name: "77. Trần Hải Yến", title: "Thành viên" },
-  ];
+  // Hiển thị danh sách thành viên chạy ngang
+  const honorees = Array.from({ length: 77 }, (_, i) => ({
+    name: `${i+1}. Thành viên ${i+1}`,
+    title: "Thành viên"
+  }));
 
   const track = document.getElementById("marqueeTrack");
   track.innerHTML = honorees.map(h => `<div class="marquee-item">${h.name} • ${h.title}</div>`).join('') +
                     honorees.map(h => `<div class="marquee-item">${h.name} • ${h.title}</div>`).join('');
 
-  // Hiệu ứng khi scroll
+  // Hiệu ứng hiện ảnh khi scroll
   const photos = document.querySelectorAll('.photo');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-        // tung hoa & pháo hoa
         createFlowers();
         createFireworks();
       }
     });
   }, { threshold: 0.3 });
-
   photos.forEach(p => observer.observe(p));
 
-  // Hiệu ứng hoa rơi
+  // Hoa rơi
   function createFlowers() {
     for (let i = 0; i < 10; i++) {
       const flower = document.createElement('div');
@@ -359,7 +304,7 @@
     }
   }
 
-  // Hiệu ứng pháo hoa
+  // Pháo hoa
   function createFireworks() {
     for (let i = 0; i < 4; i++) {
       const firework = document.createElement('div');
@@ -371,6 +316,15 @@
       setTimeout(() => firework.remove(), 1200);
     }
   }
+
+  // 🎵 Hiệu ứng di chuyển GIF khi cuộn
+  const gifs = document.querySelectorAll('.side-gif');
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    gifs.forEach(g => {
+      g.style.transform = `translateY(calc(-50% + ${scrollY * 0.2}px))`;
+    });
+  });
 </script>
 </body>
 </html>
