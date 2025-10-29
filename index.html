@@ -11,47 +11,13 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
-    <style>
-      /* === Nút nhạc cố định === */
-      #music-toggle {
-        position: fixed;
-        top: 16px;
-        right: 16px;
-        z-index: 1000;
-        background: rgba(255, 255, 255, 0.8);
-        border: 1px solid #ccc;
-        border-radius: 30px;
-        padding: 8px 14px;
-        font-size: 14px;
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
-        backdrop-filter: blur(6px);
-      }
-      #music-toggle:hover {
-        background: rgba(255, 255, 255, 1);
-        transform: scale(1.05);
-      }
-    </style>
   </head>
-
   <body>
-    <!-- Nút bật/tắt nhạc nổi -->
-    <button id="music-toggle" aria-pressed="false" aria-label="Bật / tắt nhạc nền">
-      🔊 Bật nhạc
-    </button>
-
-    <!-- Nhạc nền -->
-    <audio id="bg-music" loop preload="auto">
-      <source src="data/music/background.mp3" type="audio/mpeg" />
-      Trình duyệt của bạn không hỗ trợ thẻ audio.
-    </audio>
-
-    <!-- Nội dung chính -->
+    <audio id="bg-music" src="data/music/background.mp3" autoplay loop></audio>
     <div class="slideshow">
       <div class="progress-bar indicator"></div>
       <div id="card-stage" class="card-stage"></div>
-
+      
       <div id="pagination" class="pagination">
         <div class="progress-track" aria-hidden="true">
           <div class="progress-track-background">
@@ -59,78 +25,13 @@
           </div>
         </div>
         <div id="slide-numbers" class="slide-index" aria-hidden="true"></div>
-        <button
-          class="pause-button"
-          type="button"
-          aria-pressed="false"
-          aria-label="Pause slideshow"
-          title="Pause slideshow"
-        ></button>
+        <button class="pause-button" type="button" aria-pressed="false" aria-label="Pause slideshow" title="Pause slideshow"> </button>
       </div>
 
       <div class="transition-cover cover" aria-hidden="true"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
-
-    <script>
-      // === Script điều khiển nhạc ===
-      window.addEventListener("DOMContentLoaded", async () => {
-        const audio = document.getElementById("bg-music");
-        const btn = document.getElementById("music-toggle");
-        let isPlaying = false;
-
-        // Cập nhật trạng thái nút
-        const updateButton = () => {
-          if (audio.paused) {
-            btn.textContent = "🔊 Bật nhạc";
-            btn.setAttribute("aria-pressed", "false");
-          } else {
-            btn.textContent = "🔈 Tắt nhạc";
-            btn.setAttribute("aria-pressed", "true");
-          }
-        };
-
-        // Thử autoplay (nếu bị chặn thì chờ tương tác user)
-        try {
-          audio.volume = 0; // bắt đầu không tiếng
-          await audio.play();
-          // Fade-in dần âm lượng
-          let vol = 0;
-          const fade = setInterval(() => {
-            vol += 0.05;
-            if (vol >= 1) {
-              vol = 1;
-              clearInterval(fade);
-            }
-            audio.volume = vol;
-          }, 200);
-          isPlaying = true;
-        } catch (err) {
-          // Autoplay bị chặn, chờ user click
-          console.warn("Autoplay bị chặn, chờ người dùng tương tác.");
-        }
-
-        updateButton();
-
-        // Khi click nút bật/tắt
-        btn.addEventListener("click", async () => {
-          try {
-            if (audio.paused) {
-              await audio.play();
-              isPlaying = true;
-            } else {
-              audio.pause();
-              isPlaying = false;
-            }
-            updateButton();
-          } catch (err) {
-            console.warn("Không thể phát/tạm dừng nhạc:", err);
-          }
-        });
-      });
-    </script>
-
     <script src="script.js" defer></script>
   </body>
 </html>
