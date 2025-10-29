@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kỷ Niệm Tốt Nghiệp - QH2011E - TCNH - UEB</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: radial-gradient(circle at top, #fdf6f0, #e9ddff, #d2bbff);
+    color: #2b1440;
+    overflow-x: hidden;
+  }
+
+  header {
+    text-align: center;
+    padding: 70px 20px 30px;
+    animation: fadeIn 1.5s ease;
+  }
+
+  header h1 {
+    font-size: 2.8rem;
+    color: #5d2ea0;
+    text-shadow: 0 0 12px rgba(255,255,255,0.9);
+    animation: shimmer 3s infinite linear;
+  }
+
+  header p {
+    font-size: 1.1rem;
+    color: #5b3e99;
+  }
+
+  @keyframes shimmer {
+    0% { text-shadow: 0 0 8px #fff; }
+    50% { text-shadow: 0 0 22px #ffd6ff; }
+    100% { text-shadow: 0 0 8px #fff; }
+  }
+
+  /* Lịch trình */
+  .schedule {
+    max-width: 700px;
+    margin: 40px auto;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    padding: 25px 30px;
+    text-align: left;
+    animation: fadeInUp 1.8s ease;
+  }
+
+  .schedule h2 {
+    text-align: center;
+    color: #4b1d83;
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+
+  .schedule li {
+    list-style: none;
+    margin: 10px 0;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .schedule li::before {
+    content: "✨ ";
+    color: #7a36ca;
+  }
+
+  /* Thư viện ảnh */
+  .gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    padding: 80px 20px;
+    position: relative;
+  }
+
+  .photo {
+    width: 80%;
+    max-width: 900px;
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+    transition: all 1.4s ease;
+    border-radius: 25px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    overflow: hidden;
+  }
+
+  .photo.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 25px;
+    transition: transform 10s ease;
+  }
+
+  .photo:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Marquee */
+  .marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    margin: 50px 0;
+  }
+
+  .marquee-track {
+    display: inline-block;
+    animation: marquee 18s linear infinite;
+  }
+
+  .marquee-item {
+    display: inline-block;
+    margin: 0 40px;
+    font-size: 1.2rem;
+    color: #4b1d83;
+    text-shadow: 0 0 8px rgba(255,255,255,0.8);
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Pháo hoa */
+  .firework {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff, transparent);
+    pointer-events: none;
+    z-index: 999;
+    animation: explode 1s ease-out forwards;
+  }
+
+  @keyframes explode {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(30); }
+  }
+
+  /* Hoa rơi */
+  .flower {
+    position: fixed;
+    top: -10px;
+    font-size: 1.2rem;
+    opacity: 0.9;
+    animation: fall linear forwards;
+    z-index: 900;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(110vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: #4a2b7f;
+    animation: fadeIn 2s ease;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>Kỷ Niệm 10 Năm Tốt Nghiệp QH2011E - TCNH - UEB</h1>
+    <p>Những năm tháng thanh xuân - Nơi kỷ niệm mãi còn</p>
+  </header>
+
+  <section class="schedule">
+    <h2>⏰ Lịch Trình Buổi Lễ</h2>
+    <ul>
+      <li>08:30 - Đón khách & chụp ảnh lưu niệm</li>
+      <li>09:00 - Khai mạc và phát biểu</li>
+      <li>09:30 - Trình chiếu video “Hành trình 10 năm”</li>
+      <li>10:00 - Giao lưu & phát biểu cảm nghĩ</li>
+      <li>11:00 - Ăn trưa & chụp ảnh tập thể</li>
+      <li>13:30 - Bế mạc & chia tay</li>
+    </ul>
+  </section>
+
+  <section class="gallery" id="gallery">
+    <div class="photo"><img src="data/img/img-20130422.jpg" alt="Kỷ niệm 1"></div>
+    <div class="photo"><img src="data/img/img-20130422-1.jpg" alt="Kỷ niệm 2"></div>
+    <div class="photo"><img src="data/img/img-20140701.jpg" alt="Kỷ niệm 3"></div>
+    <div class="photo"><img src="data/img/img-20171119.jpg" alt="Kỷ niệm 4"></div>
+  </section>
+
+  <div class="marquee">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+
+  <footer>
+    <p>🎓 Hân hoan chào mừng QH2011E - TCNH - UEB  
+    <br>📍 Hội trường Đại học Kinh tế - ĐHQGHN — Ngày 01/11/2025</p>
+  </footer>
+
+<script>
+  // Danh sách sinh viên vinh danh
+  const honorees = [
+    { name: "Nguyễn Văn A", title: "Thủ khoa" },
+    { name: "Trần Thị B", title: "Học bổng xuất sắc" },
+    { name: "Lê Hoàng C", title: "Nghiên cứu khoa học" },
+    { name: "Phạm D", title: "Tình bạn & kỷ niệm" }
+  ];
+
+  const track = document.getElementById("marqueeTrack");
+  track.innerHTML = honorees.map(h => `<div class="marquee-item">${h.name} • ${h.title}</div>`).join('') +
+                    honorees.map(h => `<div class="marquee-item">${h.name} • ${h.title}</div>`).join('');
+
+  // Hiệu ứng khi scroll
+  const photos = document.querySelectorAll('.photo');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // tung hoa & pháo hoa
+        createFlowers();
+        createFireworks();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  photos.forEach(p => observer.observe(p));
+
+  // Hiệu ứng hoa rơi
+  function createFlowers() {
+    for (let i = 0; i < 10; i++) {
+      const flower = document.createElement('div');
+      flower.classList.add('flower');
+      flower.textContent = ['🌸','🌼','💮','🌺','🌷'][Math.floor(Math.random() * 5)];
+      flower.style.left = Math.random() * 100 + 'vw';
+      flower.style.animationDuration = (5 + Math.random() * 4) + 's';
+      document.body.appendChild(flower);
+      setTimeout(() => flower.remove(), 9000);
+    }
+  }
+
+  // Hiệu ứng pháo hoa
+  function createFireworks() {
+    for (let i = 0; i < 4; i++) {
+      const firework = document.createElement('div');
+      firework.classList.add('firework');
+      firework.style.left = (50 + (Math.random() * 30 - 15)) + '%';
+      firework.style.top = (50 + (Math.random() * 20 - 10)) + '%';
+      firework.style.background = `radial-gradient(circle, hsl(${Math.random()*360},100%,80%), transparent)`;
+      document.body.appendChild(firework);
+      setTimeout(() => firework.remove(), 1200);
+    }
+  }
+</script>
+</body>
+</html>
