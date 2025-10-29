@@ -13,11 +13,72 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <audio id="bg-music" src="data/music/background.mp3" autoplay loop></audio>
+    <div style="padding:12px 16px; display:flex; justify-content:flex-end; align-items:center; gap:12px;">
+      <button id="music-toggle" aria-pressed="false" aria-label="Bật / tắt nhạc nền" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer;">Bật nhạc</button>
+      <audio id="bg-music" loop preload="auto">
+        <source src="data/music/background.mp3" type="audio/mpeg">
+        <!-- Nếu bạn có file .ogg, thêm dưới đây để tăng tương thích -->
+        <!-- <source src="data/music/background.ogg" type="audio/ogg"> -->
+        Trình duyệt của bạn không hỗ trợ thẻ audio.
+      </audio>
+    </div>
+
+    <script>
+      // Thiết lập nút Play/Pause cho bg-music
+      (function () {
+        const audio = document.getElementById('bg-music');
+        const btn = document.getElementById('music-toggle');
+
+        // Cập nhật trạng thái nút theo audio
+        function updateButton() {
+          if (audio && btn) {
+            if (audio.paused) {
+              btn.textContent = 'Bật nhạc';
+              btn.setAttribute('aria-pressed', 'false');
+            } else {
+              btn.textContent = 'Tắt nhạc';
+              btn.setAttribute('aria-pressed', 'true');
+            }
+          }
+        }
+
+        // Thử autoplay (nhiều trình duyệt sẽ chặn nếu không có tương tác)
+        // Nếu bị chặn thì người dùng có thể nhấn nút để bật.
+        window.addEventListener('load', async () => {
+          try {
+            // Không đặt muted ở đây — thử phát để xem nếu trình duyệt cho phép
+            await audio.play();
+          } catch (err) {
+            // Autoplay bị chặn — giữ ở trạng thái paused
+            // Bạn có thể thử audio.muted = true; audio.play(); để autoplay im lặng
+            // rồi unmute sau khi người dùng tương tác.
+            // console.log('Autoplay blocked:', err);
+          }
+          updateButton();
+        });
+
+        btn.addEventListener('click', async () => {
+          try {
+            if (audio.paused) {
+              await audio.play();
+            } else {
+              audio.pause();
+            }
+          } catch (err) {
+            console.warn('Không thể phát/paus nhạc:', err);
+          }
+          updateButton();
+        });
+
+        // Nếu audio kết thúc (nên không xảy ra vì loop), cập nhật nút
+        audio.addEventListener('play', updateButton);
+        audio.addEventListener('pause', updateButton);
+      })();
+    </script>
     <div class="slideshow">
       <div class="progress-bar indicator"></div>
-      <div id="card-stage" class="card-stage"></div>
-      
+      <div id="card-stage" class="card-stage"></div>     
+
       <div id="pagination" class="pagination">
         <div class="progress-track" aria-hidden="true">
           <div class="progress-track-background">
