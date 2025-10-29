@@ -210,6 +210,7 @@
 
   .side-gif.right {
     right: 20px;
+    width: 300px;
   }
 
   .side-gif img {
@@ -320,7 +321,7 @@
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     gifs.forEach(g => {
-      g.style.transform = `translateY(calc(-50% + ${scrollY * 0.2}px))`;
+      g.style.transform = `translateY(calc(-50% + ${scrollY * 0.15}px))`;
     });
   });
 </script>
